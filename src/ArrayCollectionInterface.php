@@ -27,8 +27,9 @@ interface ArrayCollectionInterface extends \Countable, \ArrayAccess, \IteratorAg
     public function all(): array;
     public function filter(\Closure $function);
     public function map(\Closure $function);
+    public function has($keyOrValue): bool;
     public function hasKey($key): bool;
-    public function hasElement($element): bool;
+    public function hasValue($value): bool;
     public function isEmpty(): bool;
     public function __toString(): string;
 }

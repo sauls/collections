@@ -108,9 +108,9 @@ class ArrayCollection implements ArrayCollectionInterface
         return array_key_exists($this->elements, $key);
     }
 
-    public function hasElement($element): bool
+    public function hasValue($value): bool
     {
-        return empty(array_deep_search($this->elements, $element)) ? false : true;
+        return empty(array_deep_search($this->elements, $value)) ? false : true;
     }
 
     public function isEmpty(): bool
@@ -154,5 +154,14 @@ class ArrayCollection implements ArrayCollectionInterface
     public function count(): int
     {
         return \count($this->elements);
+    }
+
+    public function has($keyOrValue): bool
+    {
+        if ($this->hasKey($keyOrValue)) {
+            return true;
+        }
+
+        return $this->hasValue($keyOrValue);
     }
 }

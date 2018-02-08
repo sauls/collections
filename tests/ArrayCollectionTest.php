@@ -329,10 +329,24 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     public function should_check_if_element_exists()
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
-        $this->assertTrue($arrayCollection->hasElement(1));
-        $this->assertTrue($arrayCollection->hasElement(22));
-        $this->assertTrue($arrayCollection->hasElement(11));
-        $this->assertFalse($arrayCollection->hasElement(9));
+        $this->assertTrue($arrayCollection->hasValue(1));
+        $this->assertTrue($arrayCollection->hasValue(22));
+        $this->assertTrue($arrayCollection->hasValue(11));
+        $this->assertFalse($arrayCollection->hasValue(9));
+    }
+
+    /**
+     * @test
+     */
+    public function should_return_existence_of_key_or_value()
+    {
+        $arrayCollection = $this->createArrayCollection($this->getTestArray());
+
+        $this->assertFalse($arrayCollection->has('test1'));
+        $this->assertTrue($arrayCollection->has('key2'));
+        $this->assertTrue($arrayCollection->has(22));
+        $this->assertTrue($arrayCollection->has('key2.z'));
+        $this->assertFalse($arrayCollection->has('key2.b'));
     }
 
 }
