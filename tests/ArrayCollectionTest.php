@@ -31,7 +31,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
             0 => 4,
         ]);
 
-        $this->assertInstanceOf(ArrayCollectionInterface::class, $newArrayCollection);
+        $this->assertInstanceOf(Collection::class, $newArrayCollection);
     }
 
     /**

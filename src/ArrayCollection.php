@@ -21,7 +21,7 @@ use function \Sauls\Component\Helper\array_key_exists;
 use function Sauls\Component\Helper\array_set_value;
 use Sauls\Component\Helper\Exception\PropertyNotAccessibleException;
 
-class ArrayCollection implements ArrayCollectionInterface
+class ArrayCollection implements Collection
 {
     /**
      * @var array
@@ -33,7 +33,7 @@ class ArrayCollection implements ArrayCollectionInterface
         $this->elements = $elements;
     }
 
-    public function create(array $elements): ArrayCollectionInterface
+    public function create(array $elements): Collection
     {
         return new static($elements);
     }

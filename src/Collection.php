@@ -12,9 +12,9 @@
 
 namespace Sauls\Component\Collection;
 
-interface ArrayCollectionInterface extends \Countable, \ArrayAccess, \IteratorAggregate
+interface Collection extends \Countable, \ArrayAccess, \IteratorAggregate
 {
-    public function create(array $elements): ArrayCollectionInterface;
+    public function create(array $elements): Collection;
     public function set($key, $value): void;
     public function add(array $elements): void;
     public function get($key, $default = null);
