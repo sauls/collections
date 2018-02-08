@@ -1,0 +1,34 @@
+{
+  "name": "sauls/collections",
+  "description": "Sauls collections",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Saulius Vaičeliūnas",
+      "email": "saulius@vaiceliunas.lt"
+    }
+  ],
+  "require": {
+    "php": ">=7.2",
+    "sauls/helpers": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.5",
+    "php-coveralls/php-coveralls": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Sauls\\Component\\Collection\\": "src/"
+    },
+    "exclude-from-classmap": [
+      "../tests"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Sauls\\Component\\Collection\\": "tests/"
+    }
+  },
+  "minimum-stability": "dev"
+}
