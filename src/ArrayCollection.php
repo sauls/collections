@@ -26,11 +26,11 @@ class ArrayCollection implements Collection
     /**
      * @var array
      */
-    private $elements;
+    private $elements = [];
 
     public function __construct(array $elements = [])
     {
-        $this->elements = $elements;
+        $this->add($elements);
     }
 
     public function create(array $elements): Collection
@@ -65,7 +65,8 @@ class ArrayCollection implements Collection
 
     public function replace(array $elements): void
     {
-        $this->elements = $elements;
+        $this->clear();
+        $this->add($elements);
     }
 
     public function removeKey($key)
