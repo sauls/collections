@@ -348,5 +348,4 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
         $this->assertTrue($arrayCollection->has('key2.z'));
         $this->assertFalse($arrayCollection->has('key2.b'));
     }
-
 }
