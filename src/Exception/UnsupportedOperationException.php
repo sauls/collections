@@ -12,7 +12,7 @@
 
 namespace Sauls\Component\Collection\Exception;
 
-class UnsupportedOperationException extends \RuntimeException
+class UnsupportedOperationException extends \LogicException
 {
     protected $message = 'Unsupported operation.';
 }
