@@ -67,10 +67,40 @@ class ImmutableArrayCollection extends ArrayCollection
     /**
      * @throws \Sauls\Component\Collection\Exception\UnsupportedOperationException
      */
-    public function removeElement($element)
+    public function removeValue($element)
     {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * @throws \Sauls\Component\Collection\Exception\UnsupportedOperationException
+     */
+    public function unserialize($value): void
+    {
+        throw new UnsupportedOperationException();
+    }
 
+    /**
+     * @throws \Sauls\Component\Collection\Exception\UnsupportedOperationException
+     */
+    public function map(\Closure $function)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @throws \Sauls\Component\Collection\Exception\UnsupportedOperationException
+     */
+    public function offsetSet($offset, $value)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @throws \Sauls\Component\Collection\Exception\UnsupportedOperationException
+     */
+    public function offsetUnset($offset)
+    {
+        throw new UnsupportedOperationException();
+    }
 }

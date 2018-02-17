@@ -13,6 +13,7 @@
 namespace Sauls\Component\Collection;
 
 use Sauls\Component\Collection\Exception\UnsupportedOperationException;
+use Sauls\Component\Collection\Stubs\SimpleObject;
 use function Sauls\Component\Helper\array_multiple_keys_exists;
 use Sauls\Component\Helper\Exception\PropertyNotAccessibleException;
 
@@ -44,7 +45,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
         $arrayCollection->set('test', 11);
         $arrayCollection->set('test.nested.key', 11);
 
-        $this->assertArrayHasKey('test', $arrayCollection->all());
+        $this->assertTrue($arrayCollection->keyExists('test'));
         $this->assertSame(11, $arrayCollection->get('test.nested.key'));
     }
 
@@ -108,7 +109,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
         $arrayCollection->removeKey('key1');
-        $this->assertArrayNotHasKey('key1', $arrayCollection->all());
+        $this->assertTrue($arrayCollection->keyDoesNotExists('key1'));
 
         $arrayCollection->removeKey('key2.x.p2');
         $this->assertFalse($arrayCollection->get('key2.x.p2', false));
@@ -122,12 +123,12 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
         $array = $this->getTestArray();
         $arrayCollection = $this->createArrayCollection($array);
 
-        $result = $arrayCollection->removeElement('x');
+        $result = $arrayCollection->removeValue('x');
         $this->assertInternalType('array', $result);
         $this->assertEmpty($result);
         $this->assertSame($array, $arrayCollection->all());
 
-        $result = $arrayCollection->removeElement(1);
+        $result = $arrayCollection->removeValue(1);
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
 
@@ -149,8 +150,8 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
             ],
         ]);
 
-        $this->assertTrue($arrayCollection->hasKey('p1'));
-        $this->assertTrue($arrayCollection->hasKey('pn.b1'));
+        $this->assertTrue($arrayCollection->keyExists('p1'));
+        $this->assertTrue($arrayCollection->keyExists('pn.b1'));
     }
 
     /**
@@ -170,7 +171,30 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     public function should_return_array_collection_as_string()
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
-        $this->assertContains('@', $arrayCollection->__toString());
+
+        $this->assertContains('#', $arrayCollection->__toString());
+    }
+
+    /**
+     * @test
+     */
+    public function should_return_array_cellection_hash()
+    {
+        $arrayCollection = $this->createArrayCollection($this->getTestArray());
+
+        $this->assertSame(
+            'd9947bc8febb07f84b611a6218ba8c1f',
+            $arrayCollection->getHash()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_return_array_collection_spl_hash()
+    {
+        $arrayCollection = $this->createArrayCollection($this->getTestArray());
+        $this->assertInternalType('string', $arrayCollection->getSplHash());
     }
 
     /**
@@ -218,11 +242,11 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
-        $this->assertFalse($arrayCollection->hasKey('key11'));
+        $this->assertFalse($arrayCollection->keyExists('key11'));
         $arrayCollection['key11'] = 1;
         $this->assertSame(1, $arrayCollection->get('key11'));
 
-        $this->assertFalse($arrayCollection->hasKey('k.b.n'));
+        $this->assertFalse($arrayCollection->keyExists('k.b.n'));
         $arrayCollection['k.b.n'] = 'works';
         $this->assertSame('works', $arrayCollection->get('k.b.n'));
     }
@@ -234,13 +258,13 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
-        $this->assertTrue($arrayCollection->hasKey('key1'));
+        $this->assertTrue($arrayCollection->keyExists('key1'));
         unset($arrayCollection['key1']);
-        $this->assertFalse($arrayCollection->hasKey('key1'));
+        $this->assertFalse($arrayCollection->keyExists('key1'));
 
-        $this->assertTrue($arrayCollection->hasKey('key2.x.p1'));
+        $this->assertTrue($arrayCollection->keyExists('key2.x.p1'));
         unset($arrayCollection['key2.x.p1']);
-        $this->assertFalse($arrayCollection->hasKey('key2.x.p1'));
+        $this->assertFalse($arrayCollection->keyExists('key2.x.p1'));
     }
 
     /**
@@ -316,7 +340,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
-        $result = $arrayCollection->map(function($value) {
+        $result = $arrayCollection->map(function ($value) {
             return \is_int($value) ? $value * 25 : $value;
         });
 
@@ -329,10 +353,10 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     public function should_check_if_element_exists()
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
-        $this->assertTrue($arrayCollection->hasValue(1));
-        $this->assertTrue($arrayCollection->hasValue(22));
-        $this->assertTrue($arrayCollection->hasValue(11));
-        $this->assertFalse($arrayCollection->hasValue(9));
+        $this->assertTrue($arrayCollection->valueExists(1));
+        $this->assertTrue($arrayCollection->valueExists(22));
+        $this->assertTrue($arrayCollection->valueExists(11));
+        $this->assertFalse($arrayCollection->valueExists(9));
     }
 
     /**
@@ -342,17 +366,17 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
-        $this->assertFalse($arrayCollection->has('test1'));
-        $this->assertTrue($arrayCollection->has('key2'));
-        $this->assertTrue($arrayCollection->has(22));
-        $this->assertTrue($arrayCollection->has('key2.z'));
-        $this->assertFalse($arrayCollection->has('key2.b'));
+        $this->assertFalse($arrayCollection->keyOrValueExists('test1'));
+        $this->assertTrue($arrayCollection->keyOrValueExists('key2'));
+        $this->assertTrue($arrayCollection->keyOrValueExists(22));
+        $this->assertTrue($arrayCollection->keyOrValueExists('key2.z'));
+        $this->assertFalse($arrayCollection->keyOrValueExists('key2.b'));
     }
 
     /**
      * @test
      */
-    public function should_throw_unsupported_method_operation_when_trying_to_set_immutable_array_collection(): void
+    public function should_throw_unsupported_operation_when_trying_to_set_immutable_array_collection(): void
     {
         $this->expectException(UnsupportedOperationException::class);
         $immutableCollection = new ImmutableArrayCollection([
@@ -365,7 +389,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_throw_unsupported_method_operation_when_trying_to_add_immutable_array_collection(): void
+    public function should_throw_unsupported_operation_when_trying_to_add_immutable_array_collection(): void
     {
         $this->expectException(UnsupportedOperationException::class);
         $immutableCollection = new ImmutableArrayCollection([
@@ -378,7 +402,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_throw_unsupported_method_operation_when_trying_to_merge_immutable_array_collection(): void
+    public function should_throw_unsupported_operation_when_trying_to_merge_immutable_array_collection(): void
     {
         $this->expectException(UnsupportedOperationException::class);
         $immutableCollection = new ImmutableArrayCollection([
@@ -391,7 +415,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_throw_unsupported_method_operation_when_trying_to_replace_immutable_array_collection(): void
+    public function should_throw_unsupported_operation_when_trying_to_replace_immutable_array_collection(): void
     {
         $this->expectException(UnsupportedOperationException::class);
         $immutableCollection = new ImmutableArrayCollection([
@@ -404,7 +428,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_throw_unsupported_method_operation_when_trying_to_clear_immutable_array_collection(): void
+    public function should_throw_unsupported_operation_when_trying_to_clear_immutable_array_collection(): void
     {
         $this->expectException(UnsupportedOperationException::class);
         $immutableCollection = new ImmutableArrayCollection([
@@ -417,7 +441,8 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_throw_unsupported_method_operation_when_trying_to_remove_key_from_immutable_array_collection(): void
+    public function should_throw_unsupported_operation_when_trying_to_remove_key_from_immutable_array_collection(
+    ): void
     {
         $this->expectException(UnsupportedOperationException::class);
         $immutableCollection = new ImmutableArrayCollection([
@@ -430,14 +455,15 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_throw_unsupported_method_operation_when_trying_to_remove_element_from_immutable_array_collection(): void
+    public function should_throw_unsupported_operation_when_trying_to_remove_element_from_immutable_array_collection(
+    ): void
     {
         $this->expectException(UnsupportedOperationException::class);
         $immutableCollection = new ImmutableArrayCollection([
             'test' => 11,
         ]);
 
-        $immutableCollection->removeElement(11);
+        $immutableCollection->removeValue(11);
     }
 
     /**
@@ -452,7 +478,149 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
 
         $this->assertSame($array, $immutableArrayCollection->all());
         $immutableArrayCollection->set('a', 'b');
+    }
 
+    /**
+     * @test
+     */
+    public function should_return_that_array_value_is_not_null()
+    {
+        $arrayCollection = new ArrayCollection([
+            'test' => 1,
+            't2' => [
+                'b' => 11,
+                'c' => [
+                    'd' => 135,
+                ],
+            ],
+        ]);
 
+        $this->assertTrue($arrayCollection->valueIsNotNull('test'));
+        $this->assertTrue($arrayCollection->valueIsNotNull('t2.b'));
+        $this->assertTrue($arrayCollection->valueIsNotNull('t2.c.d'));
+    }
+
+    /**
+     * @test
+     */
+    public function should_not_contain_key()
+    {
+        $arrayCollection = new ArrayCollection([
+            'test' => 1,
+        ]);
+
+        $this->assertTrue($arrayCollection->keyDoesNotExists('test2'));
+    }
+
+    /**
+     * @test
+     */
+    public function should_not_contain_value()
+    {
+        $arrayCollection = new ArrayCollection([
+            'test' => 1,
+        ]);
+
+        $this->assertTrue($arrayCollection->valueDoesNotExists('2'));
+    }
+
+    /**
+     * @test
+     */
+    public function should_not_contain_key_or_value()
+    {
+        $arrayCollection = new ArrayCollection([
+            'test' => 1,
+        ]);
+
+        $this->assertTrue($arrayCollection->keyOrValueDoesNotExists('test2'));
+        $this->assertTrue($arrayCollection->keyOrValueDoesNotExists(11));
+    }
+
+    /**
+     * @test
+     */
+    public function should_serialize_array(): void
+    {
+        $arrayCollection = new ArrayCollection([
+            'test' => 1,
+            'obj' => new SimpleObject(),
+        ]);
+
+        $this->assertSame(
+            'a:2:{s:4:"test";i:1;s:3:"obj";O:45:"Sauls\Component\Collection\Stubs\SimpleObject":1:{s:9:"property1";s:5:"prop1";}}',
+            $arrayCollection->serialize()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_unserialize_array(): void
+    {
+        $arrayCollection = new ArrayCollection([
+            'key' => 1,
+        ]);
+
+        $arrayCollection->unserialize('a:2:{s:4:"test";i:1;s:3:"obj";O:45:"Sauls\Component\Collection\Stubs\SimpleObject":1:{s:9:"property1";s:5:"prop1";}}');
+
+        $this->assertTrue($arrayCollection->keyExists('test'));
+        $this->assertTrue($arrayCollection->keyDoesNotExists('key'));
+        $this->assertSame('prop1', $arrayCollection->get('obj.property1'));
+    }
+
+    /**
+     * @test
+     */
+    public function should_throw_unsupported_operation_when_trying_to_unset_element_from_immutable_array_collection(
+    ): void
+    {
+        $this->expectException(UnsupportedOperationException::class);
+        $immutableCollection = new ImmutableArrayCollection([
+            'test' => 11,
+        ]);
+
+        unset($immutableCollection['test']);
+    }
+
+    /**
+     * @test
+     */
+    public function should_throw_unsupported_operation_when_trying_to_array_set_element_from_immutable_array_collection(): void
+    {
+        $this->expectException(UnsupportedOperationException::class);
+        $immutableCollection = new ImmutableArrayCollection([
+            'test' => 11,
+        ]);
+
+        $immutableCollection['test'] = 25;
+    }
+
+    /**
+     * @test
+     */
+    public function should_throw_unsupported_operation_when_trying_to_map_elements_from_immutable_array_collection(): void
+    {
+        $this->expectException(UnsupportedOperationException::class);
+        $immutableCollection = new ImmutableArrayCollection([
+            'test' => 11,
+        ]);
+
+        $immutableCollection->map(function ($v) {
+            return $v * 15;
+        });
+    }
+
+    /**
+     * @test
+     */
+    public function should_throw_unsupported_operation_when_trying_to_unserialize_elements_from_immutable_array_collection(): void
+    {
+        $this->expectException(UnsupportedOperationException::class);
+        $immutableCollection = new ImmutableArrayCollection([
+            'test' => 11,
+        ]);
+
+        $immutableCollection->unserialize('a:2:{s:4:"test";i:1;s:3:"obj";O:45:"Sauls\Component\Collection\Stubs\SimpleObject":1:{s:9:"property1";s:5:"prop1";}}');
     }
 }

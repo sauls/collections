@@ -21,7 +21,7 @@ use function \Sauls\Component\Helper\array_key_exists;
 use function Sauls\Component\Helper\array_set_value;
 use Sauls\Component\Helper\Exception\PropertyNotAccessibleException;
 
-class ArrayCollection implements Collection
+class ArrayCollection implements Collection, \Serializable
 {
     /**
      * @var array
@@ -74,7 +74,7 @@ class ArrayCollection implements Collection
         return array_remove_key($this->elements, $key, false);
     }
 
-    public function removeElement($element)
+    public function removeValue($element)
     {
         return array_remove_value($this->elements, $element);
     }
@@ -104,14 +104,48 @@ class ArrayCollection implements Collection
         return \array_map($function, $this->elements);
     }
 
-    public function hasKey($key): bool
+    public function keyOrValueExists($keyOrValue): bool
+    {
+        if ($this->keyExists($keyOrValue)) {
+            return true;
+        }
+
+        return $this->valueExists($keyOrValue);
+    }
+
+    public function keyOrValueDoesNotExists($keyOrValue): bool
+    {
+        return false === $this->keyOrValueExists($keyOrValue);
+    }
+
+    public function keyExists($key): bool
     {
         return array_key_exists($this->elements, $key);
     }
 
-    public function hasValue($value): bool
+    public function keyDoesNotExists($key): bool
+    {
+        return false === $this->keyExists($key);
+    }
+
+    public function valueExists($value): bool
     {
         return empty(array_deep_search($this->elements, $value)) ? false : true;
+    }
+
+    public function valueDoesNotExists($value): bool
+    {
+        return false === $this->valueExists($value);
+    }
+
+    public function valueIsNull($key): bool
+    {
+        return null === $this->get($key);
+    }
+
+    public function valueIsNotNull($key): bool
+    {
+        return false === $this->valueIsNull($key);
     }
 
     public function isEmpty(): bool
@@ -121,8 +155,22 @@ class ArrayCollection implements Collection
 
     public function __toString(): string
     {
-        return __CLASS__ . '@' . spl_object_hash($this);
+        return __CLASS__ . '#' . $this->getHash();
     }
+
+    public function getHash(): string
+    {
+        return md5($this->serialize());
+    }
+
+    /**
+     * @return string
+     */
+    public function getSplHash(): string
+    {
+        return \spl_object_hash($this);
+    }
+
 
     public function getIterator()
     {
@@ -131,7 +179,7 @@ class ArrayCollection implements Collection
 
     public function offsetExists($offset)
     {
-        return $this->hasKey($offset);
+        return $this->keyExists($offset);
     }
 
     /**
@@ -157,12 +205,13 @@ class ArrayCollection implements Collection
         return \count($this->elements);
     }
 
-    public function has($keyOrValue): bool
+    public function serialize(): string
     {
-        if ($this->hasKey($keyOrValue)) {
-            return true;
-        }
+        return \serialize($this->elements);
+    }
 
-        return $this->hasValue($keyOrValue);
+    public function unserialize($value): void
+    {
+        $this->elements = \unserialize($value);
     }
 }
