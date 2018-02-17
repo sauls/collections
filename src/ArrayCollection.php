@@ -28,9 +28,22 @@ class ArrayCollection implements Collection, \Serializable
      */
     private $elements = [];
 
-    public function __construct(array $elements = [])
+    public function __construct($elements = null)
     {
-        $this->add($elements);
+        $this->add($this->assureArray($elements));
+    }
+
+    private function assureArray($elements)
+    {
+        if (\is_array($elements)) {
+            return $elements;
+        }
+
+        if ($elements instanceof \Traversable) {
+            return iterator_to_array($elements);
+        }
+
+        return (array) $elements;
     }
 
     public function create(array $elements): Collection
@@ -213,5 +226,54 @@ class ArrayCollection implements Collection, \Serializable
     public function unserialize($value): void
     {
         $this->elements = \unserialize($value);
+    }
+
+    public function sort(\Closure $function = null): Collection
+    {
+        $elements = $this->elements;
+
+        $function
+            ? \uasort($elements, $function)
+            : \sort($elements);
+
+        return $this->create($elements);
+    }
+
+    public function sortKeys(\Closure $function = null): Collection
+    {
+        $elements = $this->elements;
+
+        $function
+            ? \uksort($elements, $function)
+            : \ksort($elements);
+
+        return $this->create($elements);
+    }
+
+    public function diff(array $elements, \Closure $function = null): Collection
+    {
+        $difference = $function
+            ? \array_udiff($this->elements, $elements, $function)
+            : \array_diff($this->elements, $elements);
+
+        return $this->create($difference);
+    }
+
+    public function diffKeys(array $elements, \Closure $function = null): Collection
+    {
+        $keys = $function
+            ? \array_diff_ukey($this->elements, $elements, $function)
+            : \array_diff_key($this->elements, $elements);
+
+        return $this->create($keys);
+    }
+
+    public function diffAssoc(array $elements, \Closure $function = null): Collection
+    {
+        $difference = $function
+            ? \array_diff_uassoc($this->elements, $elements, $function)
+            : \array_diff_assoc($this->elements, $elements);
+
+        return $this->create($difference);
     }
 }

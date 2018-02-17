@@ -14,11 +14,24 @@ namespace Sauls\Component\Collection;
 
 use Sauls\Component\Collection\Exception\UnsupportedOperationException;
 use Sauls\Component\Collection\Stubs\SimpleObject;
+use Sauls\Component\Collection\Stubs\TraversableObject;
 use function Sauls\Component\Helper\array_multiple_keys_exists;
 use Sauls\Component\Helper\Exception\PropertyNotAccessibleException;
 
 class ArrayCollectionTest extends ArrayCollectionTestCase
 {
+    /**
+     * @test
+     */
+    public function should_assure_that_passed_variable_is_array()
+    {
+        $this->assertSame([], (new ArrayCollection([]))->all());
+        $this->assertSame([0 => 'test'], (new ArrayCollection('test'))->all());
+        $this->assertSame([0 => 1], (new ArrayCollection(1))->all());
+        $this->assertSame([0 => 1], (new ArrayCollection([1]))->all());
+        $this->assertSame(['test' => '24'], (new ArrayCollection(new TraversableObject()))->all());
+    }
+
     /**
      * @test
      */
@@ -441,8 +454,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_throw_unsupported_operation_when_trying_to_remove_key_from_immutable_array_collection(
-    ): void
+    public function should_throw_unsupported_operation_when_trying_to_remove_key_from_immutable_array_collection(): void
     {
         $this->expectException(UnsupportedOperationException::class);
         $immutableCollection = new ImmutableArrayCollection([
@@ -586,7 +598,8 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_throw_unsupported_operation_when_trying_to_array_set_element_from_immutable_array_collection(): void
+    public function should_throw_unsupported_operation_when_trying_to_array_set_element_from_immutable_array_collection(
+    ): void
     {
         $this->expectException(UnsupportedOperationException::class);
         $immutableCollection = new ImmutableArrayCollection([
@@ -599,7 +612,8 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_throw_unsupported_operation_when_trying_to_map_elements_from_immutable_array_collection(): void
+    public function should_throw_unsupported_operation_when_trying_to_map_elements_from_immutable_array_collection(
+    ): void
     {
         $this->expectException(UnsupportedOperationException::class);
         $immutableCollection = new ImmutableArrayCollection([
@@ -614,7 +628,8 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_throw_unsupported_operation_when_trying_to_unserialize_elements_from_immutable_array_collection(): void
+    public function should_throw_unsupported_operation_when_trying_to_unserialize_elements_from_immutable_array_collection(
+    ): void
     {
         $this->expectException(UnsupportedOperationException::class);
         $immutableCollection = new ImmutableArrayCollection([
@@ -622,5 +637,241 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
         ]);
 
         $immutableCollection->unserialize('a:2:{s:4:"test";i:1;s:3:"obj";O:45:"Sauls\Component\Collection\Stubs\SimpleObject":1:{s:9:"property1";s:5:"prop1";}}');
+    }
+
+    /**
+     * @test
+     */
+    public function should_sort_given_array()
+    {
+        $array = [7, 5, 4, 9, 1, 3, 6, 2, 8,];
+        $arrayCollection = new ArrayCollection($array);
+
+        $this->assertSame([1, 2, 3, 4, 5, 6, 7, 8, 9], $arrayCollection->sort()->all());
+    }
+
+    /**
+     * @test
+     */
+    public function should_sort_given_array_with_user_given_function()
+    {
+        $array = [7, 5, 4, 9, 1, 3, 6, 2, 8,];
+        $arrayCollection = new ArrayCollection($array);
+
+        $this->assertSame(
+            [
+                3 => 9,
+                8 => 8,
+                0 => 7,
+                6 => 6,
+                1 => 5,
+                2 => 4,
+                5 => 3,
+                7 => 2,
+                4 => 1,
+            ],
+            $arrayCollection->sort(
+                function ($a, $b) {
+                    return $b > $a;
+                }
+            )->all()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_sort_array_keys()
+    {
+        $array = [2 => 7, 1 => 5, 0 => 4, 3 => 9, 8 => 1, 4 => 3, 7 => 6, 6 => 2, 5 => 8,];
+        $arrayCollection = new ArrayCollection($array);
+
+        $this->assertSame(
+            [
+                0 => 4,
+                1 => 5,
+                2 => 7,
+                3 => 9,
+                4 => 3,
+                5 => 8,
+                6 => 2,
+                7 => 6,
+                8 => 1,
+            ],
+            $arrayCollection->sortKeys()->all()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_sort_array_keys_with_user_given_function()
+    {
+        $array = [2 => 7, 1 => 5, 0 => 4, 3 => 9, 8 => 1, 4 => 3, 7 => 6, 6 => 2, 5 => 8,];
+        $arrayCollection = new ArrayCollection($array);
+
+        $this->assertSame(
+            [
+                8 => 1,
+                7 => 6,
+                6 => 2,
+                5 => 8,
+                4 => 3,
+                3 => 9,
+                2 => 7,
+                1 => 5,
+                0 => 4,
+            ],
+            $arrayCollection->sortKeys(
+                function($a, $b) {
+                    return $b > $a;
+                }
+            )->all()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_diff_given_array(): void
+    {
+        $array = [1, 2, 3, 4];
+        $arrayToDiff = [2, 3];
+
+        $arrayCollection = new ArrayCollection($array);
+
+        $this->assertSame([0 => 1, 3 => 4], $arrayCollection->diff($arrayToDiff)->all());
+    }
+
+    /**
+     * @test
+     */
+    public function should_diff_given_array_with_user_function()
+    {
+        $array = [1, 2, 3, 4, 5, 15, 26];
+        $arrayToDiff = [2, 3, 5];
+
+        $arrayCollection = new ArrayCollection($array);
+
+        $this->assertSame(
+            [
+                0 => 1,
+                3 => 4,
+                5 => 15,
+                6 => 26,
+            ],
+            $arrayCollection->diff(
+                $arrayToDiff,
+                function($a, $b) {
+                    if ($a > $b) {
+                        return -1;
+                    } elseif ($b > $a) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            )->all()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_diff_given_array_keys(): void
+    {
+        $array1 = ['blue' => 1, 'red' => 2, 'green' => 3, 'purple' => 4];
+        $array2 = ['green' => 5, 'yellow' => 7, 'cyan' => 8];
+
+        $arrayCollection = new ArrayCollection($array1);
+
+        $this->assertSame(
+            [
+                'blue' => 1,
+                'red' => 2,
+                'purple' => 4,
+            ],
+            $arrayCollection->diffKeys($array2)->all()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_diff_given_array_keys_with_user_function(): void
+    {
+        $array1 = array('blue'  => 1, 'red'  => 2, 'green'  => 3, 'purple' => 4);
+        $array2 = array('green' => 5, 'blue' => 6, 'yellow' => 7, 'cyan'   => 8);
+
+        $arrayCollection = new ArrayCollection($array1);
+
+        $this->assertSame(
+            [
+                'red' => 2,
+                'purple' => 4,
+            ],
+            $arrayCollection->diffKeys(
+                $array2,
+                function($a, $b) {
+                    if ($a === $b) {
+                        return 0;
+                    }
+
+                    if ($a > $b) {
+                        return 1;
+                    }
+
+                    return -1;
+                }
+            )->all()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_diff_assoc_given_array(): void
+    {
+        $array1 = ['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red'];
+        $array2 = ['a' => 'green', 'yellow', 'red'];
+
+        $arrayCollection = new ArrayCollection($array1);
+
+        $this->assertSame(
+            [
+                'b' => 'brown',
+                'c' => 'blue',
+                0 => 'red',
+            ],
+            $arrayCollection->diffAssoc($array2)->all()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_diff_assoc_given_array_with_user_function(): void
+    {
+        $array1 = ['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red'];
+        $array2 = ['a' => 'green', 'yellow', 'red'];
+
+        $arrayCollection = new ArrayCollection($array1);
+
+        $this->assertSame(
+            [
+                'b' => 'brown',
+                'c' => 'blue',
+                0 => 'red',
+            ],
+            $arrayCollection->diffAssoc(
+                $array2,
+                function($a, $b) {
+                    if ($a === $b) {
+                        return 0;
+                    }
+                    return ($a > $b)? 1:-1;
+                }
+            )->all()
+        );
     }
 }
