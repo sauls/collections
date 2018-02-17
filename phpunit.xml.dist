@@ -21,6 +21,10 @@
     <filter>
         <whitelist>
             <directory suffix=".php">src/</directory>
+            <exclude>
+                <file>src/ImmutableArrayCollection.php</file>
+            </exclude>
+
         </whitelist>
     </filter>
 

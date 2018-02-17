@@ -12,7 +12,7 @@
 
 namespace Sauls\Component\Collection;
 
-use PHPUnit\Framework\TestCase;
+use Sauls\Component\Collection\Exception\UnsupportedOperationException;
 use function Sauls\Component\Helper\array_multiple_keys_exists;
 use Sauls\Component\Helper\Exception\PropertyNotAccessibleException;
 
@@ -347,5 +347,112 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
         $this->assertTrue($arrayCollection->has(22));
         $this->assertTrue($arrayCollection->has('key2.z'));
         $this->assertFalse($arrayCollection->has('key2.b'));
+    }
+
+    /**
+     * @test
+     */
+    public function should_throw_unsupported_method_operation_when_trying_to_set_immutable_array_collection(): void
+    {
+        $this->expectException(UnsupportedOperationException::class);
+        $immutableCollection = new ImmutableArrayCollection([
+            'test' => 11,
+        ]);
+
+        $immutableCollection->set('test', 12);
+    }
+
+    /**
+     * @test
+     */
+    public function should_throw_unsupported_method_operation_when_trying_to_add_immutable_array_collection(): void
+    {
+        $this->expectException(UnsupportedOperationException::class);
+        $immutableCollection = new ImmutableArrayCollection([
+            'test' => 11,
+        ]);
+
+        $immutableCollection->add(['g' => 'b']);
+    }
+
+    /**
+     * @test
+     */
+    public function should_throw_unsupported_method_operation_when_trying_to_merge_immutable_array_collection(): void
+    {
+        $this->expectException(UnsupportedOperationException::class);
+        $immutableCollection = new ImmutableArrayCollection([
+            'test' => 11,
+        ]);
+
+        $immutableCollection->merge(['test' => 'b']);
+    }
+
+    /**
+     * @test
+     */
+    public function should_throw_unsupported_method_operation_when_trying_to_replace_immutable_array_collection(): void
+    {
+        $this->expectException(UnsupportedOperationException::class);
+        $immutableCollection = new ImmutableArrayCollection([
+            'test' => 11,
+        ]);
+
+        $immutableCollection->replace(['test' => 'ccc']);
+    }
+
+    /**
+     * @test
+     */
+    public function should_throw_unsupported_method_operation_when_trying_to_clear_immutable_array_collection(): void
+    {
+        $this->expectException(UnsupportedOperationException::class);
+        $immutableCollection = new ImmutableArrayCollection([
+            'test' => 11,
+        ]);
+
+        $immutableCollection->clear();
+    }
+
+    /**
+     * @test
+     */
+    public function should_throw_unsupported_method_operation_when_trying_to_remove_key_from_immutable_array_collection(): void
+    {
+        $this->expectException(UnsupportedOperationException::class);
+        $immutableCollection = new ImmutableArrayCollection([
+            'test' => 11,
+        ]);
+
+        $immutableCollection->removeKey('test');
+    }
+
+    /**
+     * @test
+     */
+    public function should_throw_unsupported_method_operation_when_trying_to_remove_element_from_immutable_array_collection(): void
+    {
+        $this->expectException(UnsupportedOperationException::class);
+        $immutableCollection = new ImmutableArrayCollection([
+            'test' => 11,
+        ]);
+
+        $immutableCollection->removeElement(11);
+    }
+
+    /**
+     * @test
+     */
+    public function should_create_immutable_array(): void
+    {
+        $this->expectException(UnsupportedOperationException::class);
+        $array = ['test' => 'test'];
+        $arrayCollection = new ArrayCollection($array);
+        $immutableArrayCollection = (new ImmutableArrayCollection())->create($arrayCollection->all());
+
+        $this->assertSame($array, $immutableArrayCollection->all());
+        $immutableArrayCollection->set('a', 'b');
+
+
     }
 }
