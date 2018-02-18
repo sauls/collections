@@ -70,9 +70,6 @@ class ArrayCollection implements Collection, \Serializable
         $this->elements = array_merge($this->elements, $elements);
     }
 
-    /**
-     * @throws PropertyNotAccessibleException
-     */
     public function get($key, $default = null)
     {
         return array_get_value($this->elements, $key, $default);
@@ -178,9 +175,6 @@ class ArrayCollection implements Collection, \Serializable
         return md5($this->serialize());
     }
 
-    /**
-     * @return string
-     */
     public function getSplHash(): string
     {
         return \spl_object_hash($this);
@@ -197,9 +191,6 @@ class ArrayCollection implements Collection, \Serializable
         return $this->keyExists($offset);
     }
 
-    /**
-     * @throws PropertyNotAccessibleException
-     */
     public function offsetGet($offset)
     {
         return $this->get($offset);
@@ -230,55 +221,6 @@ class ArrayCollection implements Collection, \Serializable
         $this->elements = \unserialize($value);
     }
 
-    public function sort(\Closure $function = null): Collection
-    {
-        $elements = $this->elements;
-
-        $function
-            ? \uasort($elements, $function)
-            : \sort($elements);
-
-        return $this->create($elements);
-    }
-
-    public function sortKeys(\Closure $function = null): Collection
-    {
-        $elements = $this->elements;
-
-        $function
-            ? \uksort($elements, $function)
-            : \ksort($elements);
-
-        return $this->create($elements);
-    }
-
-    public function diff(array $elements, \Closure $function = null): Collection
-    {
-        $difference = $function
-            ? \array_udiff($this->elements, $elements, $function)
-            : \array_diff($this->elements, $elements);
-
-        return $this->create($difference);
-    }
-
-    public function diffKeys(array $elements, \Closure $function = null): Collection
-    {
-        $keys = $function
-            ? \array_diff_ukey($this->elements, $elements, $function)
-            : \array_diff_key($this->elements, $elements);
-
-        return $this->create($keys);
-    }
-
-    public function diffAssoc(array $elements, \Closure $function = null): Collection
-    {
-        $difference = $function
-            ? \array_diff_uassoc($this->elements, $elements, $function)
-            : \array_diff_assoc($this->elements, $elements);
-
-        return $this->create($difference);
-    }
-
     public function keys(): Collection
     {
         return $this->create(array_key_assoc($this->elements));
@@ -287,10 +229,5 @@ class ArrayCollection implements Collection, \Serializable
     protected function assign(array $elements): void
     {
         $this->elements = $elements;
-    }
-
-    public function diffKeysAssoc(array $elements): Collection
-    {
-        return $this->create(array_diff_key_assoc($this->elements, $elements));
     }
 }
