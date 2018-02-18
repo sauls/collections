@@ -30,7 +30,9 @@ interface Collection extends \Countable, \ArrayAccess, \IteratorAggregate
     public function sortKeys(\Closure $function = null): Collection;
     public function diff(array $elements, \Closure $function = null): Collection;
     public function diffKeys(array $elements, \Closure $function = null): Collection;
+    public function diffKeysAssoc(array $elements): Collection;
     public function diffAssoc(array $elements, \Closure $function = null): Collection;
+    public function keys(): Collection;
     public function map(\Closure $function);
     public function keyOrValueExists($keyOrValue): bool;
     public function keyOrValueDoesNotExists($keyOrValue): bool;

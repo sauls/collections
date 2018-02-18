@@ -13,7 +13,9 @@
 namespace Sauls\Component\Collection;
 
 use function Sauls\Component\Helper\array_deep_search;
+use function Sauls\Component\Helper\array_diff_key_assoc;
 use function Sauls\Component\Helper\array_get_value;
+use function Sauls\Component\Helper\array_key_assoc;
 use function Sauls\Component\Helper\array_remove_key;
 use function Sauls\Component\Helper\array_remove_value;
 use function Sauls\Component\Helper\array_merge;
@@ -275,5 +277,20 @@ class ArrayCollection implements Collection, \Serializable
             : \array_diff_assoc($this->elements, $elements);
 
         return $this->create($difference);
+    }
+
+    public function keys(): Collection
+    {
+        return $this->create(array_key_assoc($this->elements));
+    }
+
+    protected function assign(array $elements): void
+    {
+        $this->elements = $elements;
+    }
+
+    public function diffKeysAssoc(array $elements): Collection
+    {
+        return $this->create(array_diff_key_assoc($this->elements, $elements));
     }
 }

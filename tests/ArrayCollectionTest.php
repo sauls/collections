@@ -389,6 +389,36 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
+    public function should_construct_immutable_array_collection(): void
+    {
+        $immutableArrayCollection = new ImmutableArrayCollection(['no' => 'change']);
+
+        $this->assertSame(
+            [
+                'no' => 'change',
+            ],
+            $immutableArrayCollection->all()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_create_immutable_array_collection(): void
+    {
+        $immutableArrayCollection = (new ImmutableArrayCollection())->create(['no' => 'change']);
+
+        $this->assertSame(
+            [
+                'no' => 'change',
+            ],
+            $immutableArrayCollection->all()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function should_throw_unsupported_operation_when_trying_to_set_immutable_array_collection(): void
     {
         $this->expectException(UnsupportedOperationException::class);
@@ -872,6 +902,95 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
                     return ($a > $b)? 1:-1;
                 }
             )->all()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_return_flat_array_keys()
+    {
+        $arrayCollection = new ArrayCollection([
+            'a' => 1,
+            'b' => 2,
+        ]);
+
+        $this->assertSame(
+            [
+                0 => 'a',
+                1 => 'b',
+            ],
+            $arrayCollection->keys()->all()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_return_assoc_array_keys()
+    {
+        $arrayCollection = new ArrayCollection([
+            'a' => 1,
+            'c' => [
+                'd' => 11
+            ],
+            'g' => 2,
+            'x' => [
+                'y' => [
+                    'z' => [
+                        'yes' => 11
+                    ]
+                ]
+            ]
+        ]);
+
+        $this->assertSame(
+            [
+                0 => 'a',
+                1 => 'c.d',
+                2 => 'g',
+                3 => 'x.y.z.yes',
+            ],
+            $arrayCollection->keys()->all()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function should_diff_keys_with_associative_arrays(): void
+    {
+        $array1 = [
+            'a' => 1,
+            'b' => 2,
+            'c' => [
+                'd' => 13
+            ],
+            'x' => [
+                'y' => [
+                    'z' => 11,
+                ]
+            ]
+        ];
+        $arrayCollection = new ArrayCollection($array1);
+        $array2 = [
+            'b' => 4,
+            'c' => [
+                'd' =>11,
+            ]
+        ];
+
+
+        $this->assertSame(
+            [
+                'a' => 1,
+                'x' => [
+                    'y' => [
+                        'z' => 11,
+                    ]
+                ],
+            ],
+            $arrayCollection->diffKeysAssoc($array2)->all()
         );
     }
 }

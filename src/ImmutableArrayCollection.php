@@ -16,6 +16,11 @@ use Sauls\Component\Collection\Exception\UnsupportedOperationException;
 
 class ImmutableArrayCollection extends ArrayCollection
 {
+    public function __construct($elements = null)
+    {
+        $this->assign((new ArrayCollection($elements))->all());
+    }
+    
     /**
      * @throws \Sauls\Component\Collection\Exception\UnsupportedOperationException
      */

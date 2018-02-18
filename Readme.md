@@ -33,3 +33,4 @@ $ composer require sauls/collections
 Available collections
 
 * ArrayCollection
+* ImmutableArrayCollection
