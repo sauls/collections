@@ -570,8 +570,8 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
             'test' => 1,
         ]);
 
-        $this->assertTrue($arrayCollection->keyOrValueDoesNotExists('test2'));
-        $this->assertTrue($arrayCollection->keyOrValueDoesNotExists(11));
+        $this->assertTrue($arrayCollection->keyOrValueDoesNotExist('test2'));
+        $this->assertTrue($arrayCollection->keyOrValueDoesNotExist(11));
     }
 
     /**

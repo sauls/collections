@@ -31,7 +31,7 @@ interface Collection extends \Countable, \ArrayAccess, \IteratorAggregate
     public function map(\Closure $function): Collection;
 
     public function keyOrValueExists($keyOrValue): bool;
-    public function keyOrValueDoesNotExists($keyOrValue): bool;
+    public function keyOrValueDoesNotExist($keyOrValue): bool;
     public function keyExists($key): bool;
     public function keyDoesNotExist($key): bool;
     public function valueExists($value): bool;

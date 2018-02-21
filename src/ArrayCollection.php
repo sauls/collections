@@ -111,7 +111,7 @@ class ArrayCollection implements Collection, \JsonSerializable
         return $this->valueExists($keyOrValue);
     }
 
-    public function keyOrValueDoesNotExists($keyOrValue): bool
+    public function keyOrValueDoesNotExist($keyOrValue): bool
     {
         return false === $this->keyOrValueExists($keyOrValue);
     }
