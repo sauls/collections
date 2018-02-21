@@ -13,15 +13,13 @@
 namespace Sauls\Component\Collection;
 
 use function Sauls\Component\Helper\array_deep_search;
-use function Sauls\Component\Helper\array_diff_key_assoc;
 use function Sauls\Component\Helper\array_get_value;
-use function Sauls\Component\Helper\array_key_assoc;
 use function Sauls\Component\Helper\array_remove_key;
 use function Sauls\Component\Helper\array_remove_value;
 use function Sauls\Component\Helper\array_merge;
-use function \Sauls\Component\Helper\array_key_exists;
+use function Sauls\Component\Helper\array_key_exists;
 use function Sauls\Component\Helper\array_set_value;
-use Sauls\Component\Helper\Exception\PropertyNotAccessibleException;
+use function Sauls\Component\Helper\array_keys;
 
 class ArrayCollection implements Collection, \Serializable
 {
@@ -132,7 +130,7 @@ class ArrayCollection implements Collection, \Serializable
 
     public function keyExists($key): bool
     {
-        return array_key_exists($this->elements, $key);
+        return array_key_exists($key, $this->elements);
     }
 
     public function keyDoesNotExists($key): bool
@@ -223,7 +221,7 @@ class ArrayCollection implements Collection, \Serializable
 
     public function keys(): Collection
     {
-        return $this->create(array_key_assoc($this->elements));
+        return $this->create(array_keys($this->elements));
     }
 
     protected function assign(array $elements): void

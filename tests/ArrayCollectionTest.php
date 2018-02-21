@@ -145,7 +145,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
 
-        $this->assertFalse(array_multiple_keys_exists($arrayCollection->all(), \array_keys($result)));
+        $this->assertFalse(array_multiple_keys_exists(\array_keys($result), $arrayCollection->all()));
     }
 
     /**
