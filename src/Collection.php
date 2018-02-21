@@ -32,9 +32,9 @@ interface Collection extends \Countable, \ArrayAccess, \IteratorAggregate
 
     public function keyOrValueExists($keyOrValue): bool;
     public function keyOrValueDoesNotExists($keyOrValue): bool;
-    public function keyExist($key): bool;
+    public function keyExists($key): bool;
     public function keyDoesNotExist($key): bool;
-    public function valueExist($value): bool;
+    public function valueExists($value): bool;
     public function valueDoesNotExist($value): bool;
     public function valueIsNull($key): bool;
     public function valueIsNotNull($key): bool;

@@ -56,7 +56,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
         $arrayCollection->set('test', 11);
         $arrayCollection->set('test.nested.key', 11);
 
-        $this->assertTrue($arrayCollection->keyExist('test'));
+        $this->assertTrue($arrayCollection->keyExists('test'));
         $this->assertSame(11, $arrayCollection->get('test.nested.key'));
     }
 
@@ -159,8 +159,8 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
             ],
         ]);
 
-        $this->assertTrue($arrayCollection->keyExist('p1'));
-        $this->assertTrue($arrayCollection->keyExist('pn.b1'));
+        $this->assertTrue($arrayCollection->keyExists('p1'));
+        $this->assertTrue($arrayCollection->keyExists('pn.b1'));
     }
 
     /**
@@ -250,11 +250,11 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
-        $this->assertFalse($arrayCollection->keyExist('key11'));
+        $this->assertFalse($arrayCollection->keyExists('key11'));
         $arrayCollection['key11'] = 1;
         $this->assertSame(1, $arrayCollection->get('key11'));
 
-        $this->assertFalse($arrayCollection->keyExist('k.b.n'));
+        $this->assertFalse($arrayCollection->keyExists('k.b.n'));
         $arrayCollection['k.b.n'] = 'works';
         $this->assertSame('works', $arrayCollection->get('k.b.n'));
     }
@@ -266,13 +266,13 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
-        $this->assertTrue($arrayCollection->keyExist('key1'));
+        $this->assertTrue($arrayCollection->keyExists('key1'));
         unset($arrayCollection['key1']);
-        $this->assertFalse($arrayCollection->keyExist('key1'));
+        $this->assertFalse($arrayCollection->keyExists('key1'));
 
-        $this->assertTrue($arrayCollection->keyExist('key2.x.p1'));
+        $this->assertTrue($arrayCollection->keyExists('key2.x.p1'));
         unset($arrayCollection['key2.x.p1']);
-        $this->assertFalse($arrayCollection->keyExist('key2.x.p1'));
+        $this->assertFalse($arrayCollection->keyExists('key2.x.p1'));
     }
 
     /**
@@ -361,10 +361,10 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     public function should_check_if_element_exists(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
-        $this->assertTrue($arrayCollection->valueExist(1));
-        $this->assertTrue($arrayCollection->valueExist(22));
-        $this->assertTrue($arrayCollection->valueExist(11));
-        $this->assertFalse($arrayCollection->valueExist(9));
+        $this->assertTrue($arrayCollection->valueExists(1));
+        $this->assertTrue($arrayCollection->valueExists(22));
+        $this->assertTrue($arrayCollection->valueExists(11));
+        $this->assertFalse($arrayCollection->valueExists(9));
     }
 
     /**

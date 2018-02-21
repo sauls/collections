@@ -104,11 +104,11 @@ class ArrayCollection implements Collection, \JsonSerializable
 
     public function keyOrValueExists($keyOrValue): bool
     {
-        if ($this->keyExist($keyOrValue)) {
+        if ($this->keyExists($keyOrValue)) {
             return true;
         }
 
-        return $this->valueExist($keyOrValue);
+        return $this->valueExists($keyOrValue);
     }
 
     public function keyOrValueDoesNotExists($keyOrValue): bool
@@ -116,24 +116,24 @@ class ArrayCollection implements Collection, \JsonSerializable
         return false === $this->keyOrValueExists($keyOrValue);
     }
 
-    public function keyExist($key): bool
+    public function keyExists($key): bool
     {
         return array_key_exists($key, $this->elements);
     }
 
     public function keyDoesNotExist($key): bool
     {
-        return false === $this->keyExist($key);
+        return false === $this->keyExists($key);
     }
 
-    public function valueExist($value): bool
+    public function valueExists($value): bool
     {
         return empty(array_deep_search($this->elements, $value)) ? false : true;
     }
 
     public function valueDoesNotExist($value): bool
     {
-        return false === $this->valueExist($value);
+        return false === $this->valueExists($value);
     }
 
     public function valueIsNull($key): bool
@@ -173,7 +173,7 @@ class ArrayCollection implements Collection, \JsonSerializable
 
     public function offsetExists($offset)
     {
-        return $this->keyExist($offset);
+        return $this->keyExists($offset);
     }
 
     public function offsetGet($offset)
