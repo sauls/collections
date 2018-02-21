@@ -18,6 +18,9 @@
     "php-coveralls/php-coveralls": "^2.0"
   },
   "autoload": {
+    "files": [
+      "src/Converter/converters.php"
+    ],
     "psr-4": {
       "Sauls\\Component\\Collection\\": "src/"
     },
@@ -30,5 +33,10 @@
       "Sauls\\Component\\Collection\\": "tests/"
     }
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "extra": {
+    "branch-alias": {
+      "dev-master": "v1.x-dev"
+    }
+  }
 }

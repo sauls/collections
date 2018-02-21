@@ -36,16 +36,7 @@ $ composer require sauls/collections
 * ArrayCollection
 * ImmutableArrayCollection
 
-### Additional type converters
+### Additional type converters to [sauls/helpers](https://github.com/sauls/helpers) `function convert_to`
 
 * CollectionToArrayConverter
 * ArrayableToArrayConverter
-
-Add needed collection support to `Collection` 
-
-```php
-register_converters([
-    new Converters\CollectionToArrayConverter,
-    new Converters\ArrayableToArrayConverter
-]);
-```
