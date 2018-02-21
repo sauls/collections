@@ -37,15 +37,13 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
      */
     public function should_create_array_collection()
     {
-        $arrayCollection = $this->createArrayCollection();
-
-        $newArrayCollection = $arrayCollection->create([
+        $arrayCollection = ArrayCollection::create([
             'new' => 'key',
             'test' => 11,
             0 => 4,
         ]);
 
-        $this->assertInstanceOf(Collection::class, $newArrayCollection);
+        $this->assertInstanceOf(Collection::class, $arrayCollection);
     }
 
     /**
@@ -58,15 +56,14 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
         $arrayCollection->set('test', 11);
         $arrayCollection->set('test.nested.key', 11);
 
-        $this->assertTrue($arrayCollection->keyExists('test'));
+        $this->assertTrue($arrayCollection->keyExist('test'));
         $this->assertSame(11, $arrayCollection->get('test.nested.key'));
     }
 
     /**
      * @test
-     * @throws PropertyNotAccessibleException
      */
-    public function should_merge_with_another_array()
+    public function should_merge_with_another_array(): void
     {
         $arrayCollection = $this->createArrayCollection([
             'x' => 11,
@@ -93,7 +90,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_replace_current_array_with_new_array()
+    public function should_replace_current_array_with_new_array(): void
     {
         $array = [
             '6' => 59,
@@ -115,14 +112,13 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
 
     /**
      * @test
-     * @throws PropertyNotAccessibleException
      */
-    public function should_remove_array_key()
+    public function should_remove_array_key(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
         $arrayCollection->removeKey('key1');
-        $this->assertTrue($arrayCollection->keyDoesNotExists('key1'));
+        $this->assertTrue($arrayCollection->keyDoesNotExist('key1'));
 
         $arrayCollection->removeKey('key2.x.p2');
         $this->assertFalse($arrayCollection->get('key2.x.p2', false));
@@ -131,7 +127,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_remove_array_element()
+    public function should_remove_array_element(): void
     {
         $array = $this->getTestArray();
         $arrayCollection = $this->createArrayCollection($array);
@@ -151,7 +147,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_add_given_array()
+    public function should_add_given_array(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
@@ -163,14 +159,14 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
             ],
         ]);
 
-        $this->assertTrue($arrayCollection->keyExists('p1'));
-        $this->assertTrue($arrayCollection->keyExists('pn.b1'));
+        $this->assertTrue($arrayCollection->keyExist('p1'));
+        $this->assertTrue($arrayCollection->keyExist('pn.b1'));
     }
 
     /**
      * @test
      */
-    public function should_clear_array()
+    public function should_clear_array(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
         $this->assertFalse($arrayCollection->isEmpty());
@@ -181,7 +177,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_return_array_collection_as_string()
+    public function should_return_array_collection_as_string(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
@@ -191,7 +187,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_return_array_cellection_hash()
+    public function should_return_array_cellection_hash(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
@@ -204,7 +200,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_return_array_collection_spl_hash()
+    public function should_return_array_collection_spl_hash(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
         $this->assertInternalType('string', $arrayCollection->getSplHash());
@@ -213,7 +209,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_foreach_collection_as_normal_array()
+    public function should_foreach_collection_as_normal_array(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
@@ -225,7 +221,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_have_array_access()
+    public function should_have_array_access(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
@@ -237,7 +233,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_check_if_offset_exists()
+    public function should_check_if_offset_exists(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
@@ -249,17 +245,16 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
 
     /**
      * @test
-     * @throws PropertyNotAccessibleException
      */
-    public function should_make_offset_set()
+    public function should_make_offset_set(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
-        $this->assertFalse($arrayCollection->keyExists('key11'));
+        $this->assertFalse($arrayCollection->keyExist('key11'));
         $arrayCollection['key11'] = 1;
         $this->assertSame(1, $arrayCollection->get('key11'));
 
-        $this->assertFalse($arrayCollection->keyExists('k.b.n'));
+        $this->assertFalse($arrayCollection->keyExist('k.b.n'));
         $arrayCollection['k.b.n'] = 'works';
         $this->assertSame('works', $arrayCollection->get('k.b.n'));
     }
@@ -267,23 +262,23 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_maked_offset_unset()
+    public function should_maked_offset_unset(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
-        $this->assertTrue($arrayCollection->keyExists('key1'));
+        $this->assertTrue($arrayCollection->keyExist('key1'));
         unset($arrayCollection['key1']);
-        $this->assertFalse($arrayCollection->keyExists('key1'));
+        $this->assertFalse($arrayCollection->keyExist('key1'));
 
-        $this->assertTrue($arrayCollection->keyExists('key2.x.p1'));
+        $this->assertTrue($arrayCollection->keyExist('key2.x.p1'));
         unset($arrayCollection['key2.x.p1']);
-        $this->assertFalse($arrayCollection->keyExists('key2.x.p1'));
+        $this->assertFalse($arrayCollection->keyExist('key2.x.p1'));
     }
 
     /**
      * @test
      */
-    public function should_return_array_count()
+    public function should_return_array_count(): void
     {
         $arrayCollection = $this->createArrayCollection();
         $this->assertEquals(0, $arrayCollection->count());
@@ -298,7 +293,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_return_sliced_array()
+    public function should_return_sliced_array(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray([
             'key7' => '11',
@@ -325,7 +320,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_filter_array()
+    public function should_filter_array(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray([
             'love' => 1,
@@ -342,14 +337,14 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
                 function ($value, $key) {
                     return $value === 1 && false !== strpos($key, 'key');
                 }
-            )
+            )->all()
         );
     }
 
     /**
      * @test
      */
-    public function should_map_values()
+    public function should_map_values(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
@@ -363,19 +358,19 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_check_if_element_exists()
+    public function should_check_if_element_exists(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
-        $this->assertTrue($arrayCollection->valueExists(1));
-        $this->assertTrue($arrayCollection->valueExists(22));
-        $this->assertTrue($arrayCollection->valueExists(11));
-        $this->assertFalse($arrayCollection->valueExists(9));
+        $this->assertTrue($arrayCollection->valueExist(1));
+        $this->assertTrue($arrayCollection->valueExist(22));
+        $this->assertTrue($arrayCollection->valueExist(11));
+        $this->assertFalse($arrayCollection->valueExist(9));
     }
 
     /**
      * @test
      */
-    public function should_return_existence_of_key_or_value()
+    public function should_return_existence_of_key_or_value(): void
     {
         $arrayCollection = $this->createArrayCollection($this->getTestArray());
 
@@ -406,7 +401,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
      */
     public function should_create_immutable_array_collection(): void
     {
-        $immutableArrayCollection = (new ImmutableArrayCollection())->create(['no' => 'change']);
+        $immutableArrayCollection = ImmutableArrayCollection::create(['no' => 'change']);
 
         $this->assertSame(
             [
@@ -516,7 +511,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
         $this->expectException(UnsupportedOperationException::class);
         $array = ['test' => 'test'];
         $arrayCollection = new ArrayCollection($array);
-        $immutableArrayCollection = (new ImmutableArrayCollection())->create($arrayCollection->all());
+        $immutableArrayCollection = new ImmutableArrayCollection($arrayCollection->all());
 
         $this->assertSame($array, $immutableArrayCollection->all());
         $immutableArrayCollection->set('a', 'b');
@@ -525,7 +520,7 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_return_that_array_value_is_not_null()
+    public function should_return_that_array_value_is_not_null(): void
     {
         $arrayCollection = new ArrayCollection([
             'test' => 1,
@@ -545,25 +540,25 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_not_contain_key()
+    public function should_not_contain_key(): void
     {
         $arrayCollection = new ArrayCollection([
             'test' => 1,
         ]);
 
-        $this->assertTrue($arrayCollection->keyDoesNotExists('test2'));
+        $this->assertTrue($arrayCollection->keyDoesNotExist('test2'));
     }
 
     /**
      * @test
      */
-    public function should_not_contain_value()
+    public function should_not_contain_value(): void
     {
         $arrayCollection = new ArrayCollection([
             'test' => 1,
         ]);
 
-        $this->assertTrue($arrayCollection->valueDoesNotExists('2'));
+        $this->assertTrue($arrayCollection->valueDoesNotExist('2'));
     }
 
     /**
@@ -577,38 +572,6 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
 
         $this->assertTrue($arrayCollection->keyOrValueDoesNotExists('test2'));
         $this->assertTrue($arrayCollection->keyOrValueDoesNotExists(11));
-    }
-
-    /**
-     * @test
-     */
-    public function should_serialize_array(): void
-    {
-        $arrayCollection = new ArrayCollection([
-            'test' => 1,
-            'obj' => new SimpleObject(),
-        ]);
-
-        $this->assertSame(
-            'a:2:{s:4:"test";i:1;s:3:"obj";O:45:"Sauls\Component\Collection\Stubs\SimpleObject":1:{s:9:"property1";s:5:"prop1";}}',
-            $arrayCollection->serialize()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function should_unserialize_array(): void
-    {
-        $arrayCollection = new ArrayCollection([
-            'key' => 1,
-        ]);
-
-        $arrayCollection->unserialize('a:2:{s:4:"test";i:1;s:3:"obj";O:45:"Sauls\Component\Collection\Stubs\SimpleObject":1:{s:9:"property1";s:5:"prop1";}}');
-
-        $this->assertTrue($arrayCollection->keyExists('test'));
-        $this->assertTrue($arrayCollection->keyDoesNotExists('key'));
-        $this->assertSame('prop1', $arrayCollection->get('obj.property1'));
     }
 
     /**
@@ -672,17 +635,25 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_return_flat_array_keys()
+    public function should_return_flat_array_keys(): void
     {
         $arrayCollection = new ArrayCollection([
             'a' => 1,
             'b' => 2,
+            'c' => 'd',
+            'g' => [
+                'o' => [
+                    'gg' => 1,
+                ],
+            ],
         ]);
 
         $this->assertSame(
             [
                 0 => 'a',
                 1 => 'b',
+                2 => 'c',
+                3 => 'g.o.gg',
             ],
             $arrayCollection->keys()->all()
         );
@@ -691,21 +662,21 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
     /**
      * @test
      */
-    public function should_return_assoc_array_keys()
+    public function should_return_assoc_array_keys(): void
     {
         $arrayCollection = new ArrayCollection([
             'a' => 1,
             'c' => [
-                'd' => 11
+                'd' => 11,
             ],
             'g' => 2,
             'x' => [
                 'y' => [
                     'z' => [
-                        'yes' => 11
-                    ]
-                ]
-            ]
+                        'yes' => 11,
+                    ],
+                ],
+            ],
         ]);
 
         $this->assertSame(
@@ -717,5 +688,24 @@ class ArrayCollectionTest extends ArrayCollectionTestCase
             ],
             $arrayCollection->keys()->all()
         );
+    }
+
+    /**
+     * @test
+     */
+    public function should_json_serialize()
+    {
+        $arrayCollection = new ArrayCollection([
+            'a' => 1,
+            'b' => 2,
+            'x' => [
+                'c' => '55'
+            ],
+            'y' => [
+                'c' => 11
+            ],
+        ]);
+
+        $this->assertSame('{"a":1,"b":2,"x":{"c":"55"},"y":{"c":11}}', \json_encode($arrayCollection));
     }
 }

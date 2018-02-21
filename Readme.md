@@ -1,11 +1,11 @@
 # Sauls Collections
 
 [![Build Status](https://travis-ci.org/sauls/collections.svg?branch=master)](https://travis-ci.org/sauls/collections)
-[![Latest Stable Version](https://poser.pugx.org/sauls/collections/v/stable)](https://packagist.org/packages/sauls/collections)
-[![Total Downloads](https://poser.pugx.org/sauls/collections/downloads)](https://packagist.org/packages/sauls/collections)
-[![Coverage Status](https://coveralls.io/repos/github/sauls/collections/badge.svg?branch=master)](https://coveralls.io/github/sauls/collections?branch=master)
+[![Packagist](https://img.shields.io/packagist/v/sauls/collections.svg)](https://packagist.org/packages/sauls/collections)
+[![Total Downloads](https://img.shields.io/packagist/dt/sauls/collections.svg)](https://packagist.org/packages/sauls/collections)
+[![Coverage Status](https://img.shields.io/coveralls/github/sauls/collections.svg)](https://coveralls.io/github/sauls/collections?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sauls/collections/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sauls/collections/?branch=master)
-[![License](https://poser.pugx.org/sauls/collections/license)](https://packagist.org/packages/sauls/collections)
+[![License](https://img.shields.io/github/license/sauls/collections.svg)](https://packagist.org/packages/sauls/collections)
 
 Various collections to store and retrieve your data.
 
@@ -19,6 +19,7 @@ PHP >= 7.2
 ```bash
 $ composer require sauls/collections
 ```
+
 ### Apppend the composer.json file manually
 ```json
 {
@@ -30,7 +31,21 @@ $ composer require sauls/collections
 
 ## Documentation
 
-Available collections
+### Available collections
 
 * ArrayCollection
 * ImmutableArrayCollection
+
+### Additional type converters
+
+* CollectionToArrayConverter
+* ArrayableToArrayConverter
+
+Add needed collection support to `Collection` 
+
+```php
+register_converters([
+    new Converters\CollectionToArrayConverter,
+    new Converters\ArrayableToArrayConverter
+]);
+```

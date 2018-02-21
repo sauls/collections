@@ -14,7 +14,7 @@ namespace Sauls\Component\Collection;
 
 interface Collection extends \Countable, \ArrayAccess, \IteratorAggregate
 {
-    public function create(array $elements): Collection;
+    public static function create(array $elements): Collection;
     public function set($key, $value): void;
     public function add(array $elements): void;
     public function get($key, $default = null);
@@ -25,18 +25,21 @@ interface Collection extends \Countable, \ArrayAccess, \IteratorAggregate
     public function slice($offset, $length = null): array;
     public function clear(): void;
     public function all(): array;
-    public function filter(\Closure $function);
+
+    public function filter(\Closure $function): Collection;
     public function keys(): Collection;
-    public function map(\Closure $function);
+    public function map(\Closure $function): Collection;
+
     public function keyOrValueExists($keyOrValue): bool;
     public function keyOrValueDoesNotExists($keyOrValue): bool;
-    public function keyExists($key): bool;
-    public function keyDoesNotExists($key): bool;
-    public function valueExists($value): bool;
-    public function valueDoesNotExists($value): bool;
+    public function keyExist($key): bool;
+    public function keyDoesNotExist($key): bool;
+    public function valueExist($value): bool;
+    public function valueDoesNotExist($value): bool;
     public function valueIsNull($key): bool;
     public function valueIsNotNull($key): bool;
     public function isEmpty(): bool;
+
     public function __toString(): string;
     public function getHash(): string;
     public function getSplHash(): string;
