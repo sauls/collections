@@ -12,7 +12,6 @@
 
 namespace Sauls\Component\Collection\Converter;
 
-
 use PHPUnit\Framework\TestCase;
 use Sauls\Component\Collection\ArrayCollection;
 use Sauls\Component\Collection\Converter\Type\ArrayableToArrayConverter;

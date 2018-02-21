@@ -18,12 +18,12 @@
     "php-coveralls/php-coveralls": "^2.0"
   },
   "autoload": {
-    "files": [
-      "src/Converter/converters.php"
-    ],
     "psr-4": {
       "Sauls\\Component\\Collection\\": "src/"
     },
+    "files": [
+      "src/Converter/converters.php"
+    ],
     "exclude-from-classmap": [
       "../tests"
     ]

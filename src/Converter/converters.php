@@ -13,7 +13,9 @@
 use function Sauls\Component\Helper\register_converters;
 use Sauls\Component\Collection\Converter;
 
-register_converters([
-    new Converter\CollectionToArrayConverter,
-    new Converter\ArrayableToArrayConverter
-]);
+\spl_autoload_register(function() {
+    register_converters([
+        new Converter\CollectionToArrayConverter,
+        new Converter\ArrayableToArrayConverter
+    ]);
+});
