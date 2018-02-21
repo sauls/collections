@@ -11,11 +11,10 @@
  */
 
 use function Sauls\Component\Helper\register_converters;
-use Sauls\Component\Collection\Converter;
 
 \spl_autoload_register(function() {
     register_converters([
-        new Converter\CollectionToArrayConverter,
-        new Converter\ArrayableToArrayConverter
+        new Sauls\Component\Collection\Converter\Type\CollectionToArrayConverter,
+        new Sauls\Component\Collection\Converter\Type\ArrayableToArrayConverter
     ]);
 });

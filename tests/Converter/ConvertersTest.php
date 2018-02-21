@@ -12,6 +12,7 @@
 
 namespace Sauls\Component\Collection\Converter;
 
+use function Sauls\Component\Helper\convert_to;
 use PHPUnit\Framework\TestCase;
 use Sauls\Component\Collection\ArrayCollection;
 use Sauls\Component\Collection\Converter\Type\ArrayableToArrayConverter;
@@ -29,6 +30,7 @@ class ConvertersTest extends TestCase
         $collectionToArrayConverter = new CollectionToArrayConverter;
 
         $this->assertSame(['test'], $collectionToArrayConverter->convert($arrayCollection));
+        $this->assertSame(['test'], convert_to($arrayCollection, 'array'));
         $this->assertTrue($collectionToArrayConverter->supports($arrayCollection));
         $this->assertSame('array', $collectionToArrayConverter->getType());
         $this->assertSame(1024, $collectionToArrayConverter->getPriority());
@@ -43,6 +45,7 @@ class ConvertersTest extends TestCase
         $arrayableToArrayConverter = new ArrayableToArrayConverter;
 
         $this->assertSame(['property1' => 'prop1'], $arrayableToArrayConverter->convert($simpleObject));
+        $this->assertSame(['property1' => 'prop1'], convert_to($simpleObject, 'array'));
         $this->assertTrue($arrayableToArrayConverter->supports($simpleObject));
         $this->assertSame('array', $arrayableToArrayConverter->getType());
         $this->assertSame(512, $arrayableToArrayConverter->getPriority());
