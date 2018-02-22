@@ -10,18 +10,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Sauls\Component\Collection\Stubs;
+namespace Sauls\Component\Collection;
 
-use Sauls\Component\Collection\Arrayable;
-
-class SimpleObject implements Arrayable
+interface Arrayable
 {
-    public $property1 = 'prop1';
-
-    public function toArray(): array
-    {
-        return [
-            'property1' => $this->property1,
-        ];
-    }
+    public function toArray(): array;
 }

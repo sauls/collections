@@ -13,17 +13,16 @@
 namespace Sauls\Component\Collection;
 
 use function Sauls\Component\Helper\array_deep_search;
-use function Sauls\Component\Helper\array_diff_key_assoc;
 use function Sauls\Component\Helper\array_get_value;
-use function Sauls\Component\Helper\array_key_assoc;
 use function Sauls\Component\Helper\array_remove_key;
 use function Sauls\Component\Helper\array_remove_value;
 use function Sauls\Component\Helper\array_merge;
-use function \Sauls\Component\Helper\array_key_exists;
+use function Sauls\Component\Helper\array_key_exists;
 use function Sauls\Component\Helper\array_set_value;
-use Sauls\Component\Helper\Exception\PropertyNotAccessibleException;
+use function Sauls\Component\Helper\array_keys;
+use function Sauls\Component\Helper\convert_to;
 
-class ArrayCollection implements Collection, \Serializable
+class ArrayCollection implements Collection, \JsonSerializable
 {
     /**
      * @var array
@@ -32,23 +31,10 @@ class ArrayCollection implements Collection, \Serializable
 
     public function __construct($elements = null)
     {
-        $this->add($this->assureArray($elements));
+        $this->add(convert_to($elements, 'array'));
     }
 
-    private function assureArray($elements)
-    {
-        if (\is_array($elements)) {
-            return $elements;
-        }
-
-        if ($elements instanceof \Traversable) {
-            return iterator_to_array($elements);
-        }
-
-        return (array) $elements;
-    }
-
-    public function create(array $elements): Collection
+    public static function create(array $elements): Collection
     {
         return new static($elements);
     }
@@ -106,14 +92,14 @@ class ArrayCollection implements Collection, \Serializable
         return $this->elements;
     }
 
-    public function filter(\Closure $function)
+    public function filter(\Closure $function): Collection
     {
-        return \array_filter($this->elements, $function, ARRAY_FILTER_USE_BOTH);
+        return static::create(\array_filter($this->elements, $function, ARRAY_FILTER_USE_BOTH));
     }
 
-    public function map(\Closure $function)
+    public function map(\Closure $function): Collection
     {
-        return \array_map($function, $this->elements);
+        return static::create(\array_map($function, $this->elements));
     }
 
     public function keyOrValueExists($keyOrValue): bool
@@ -125,17 +111,17 @@ class ArrayCollection implements Collection, \Serializable
         return $this->valueExists($keyOrValue);
     }
 
-    public function keyOrValueDoesNotExists($keyOrValue): bool
+    public function keyOrValueDoesNotExist($keyOrValue): bool
     {
         return false === $this->keyOrValueExists($keyOrValue);
     }
 
     public function keyExists($key): bool
     {
-        return array_key_exists($this->elements, $key);
+        return array_key_exists($key, $this->elements);
     }
 
-    public function keyDoesNotExists($key): bool
+    public function keyDoesNotExist($key): bool
     {
         return false === $this->keyExists($key);
     }
@@ -145,7 +131,7 @@ class ArrayCollection implements Collection, \Serializable
         return empty(array_deep_search($this->elements, $value)) ? false : true;
     }
 
-    public function valueDoesNotExists($value): bool
+    public function valueDoesNotExist($value): bool
     {
         return false === $this->valueExists($value);
     }
@@ -172,14 +158,13 @@ class ArrayCollection implements Collection, \Serializable
 
     public function getHash(): string
     {
-        return md5($this->serialize());
+        return md5(\serialize($this->elements));
     }
 
     public function getSplHash(): string
     {
         return \spl_object_hash($this);
     }
-
 
     public function getIterator()
     {
@@ -211,23 +196,18 @@ class ArrayCollection implements Collection, \Serializable
         return \count($this->elements);
     }
 
-    public function serialize(): string
-    {
-        return \serialize($this->elements);
-    }
-
-    public function unserialize($value): void
-    {
-        $this->elements = \unserialize($value);
-    }
-
     public function keys(): Collection
     {
-        return $this->create(array_key_assoc($this->elements));
+        return static::create(array_keys($this->elements));
     }
 
     protected function assign(array $elements): void
     {
         $this->elements = $elements;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->all();
     }
 }

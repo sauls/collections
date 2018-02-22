@@ -10,18 +10,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Sauls\Component\Collection\Stubs;
+use function Sauls\Component\Helper\register_converters;
 
-use Sauls\Component\Collection\Arrayable;
-
-class SimpleObject implements Arrayable
-{
-    public $property1 = 'prop1';
-
-    public function toArray(): array
-    {
-        return [
-            'property1' => $this->property1,
-        ];
-    }
-}
+\spl_autoload_register(function() {
+    register_converters([
+        new Sauls\Component\Collection\Converter\Type\CollectionToArrayConverter,
+        new Sauls\Component\Collection\Converter\Type\ArrayableToArrayConverter
+    ]);
+});

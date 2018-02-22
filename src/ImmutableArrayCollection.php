@@ -20,7 +20,7 @@ class ImmutableArrayCollection extends ArrayCollection
     {
         $this->assign((new ArrayCollection($elements))->all());
     }
-    
+
     /**
      * @throws \Sauls\Component\Collection\Exception\UnsupportedOperationException
      */
@@ -88,7 +88,7 @@ class ImmutableArrayCollection extends ArrayCollection
     /**
      * @throws \Sauls\Component\Collection\Exception\UnsupportedOperationException
      */
-    public function map(\Closure $function)
+    public function map(\Closure $function): Collection
     {
         throw new UnsupportedOperationException();
     }
